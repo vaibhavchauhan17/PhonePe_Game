@@ -6,15 +6,25 @@ public class Ship {
     private String id;
     private int size;
     private List<int[]> coordinates;
-    private Set<String> hits;
+    // private Set<String> hits;
+    private boolean isHit;
 
-    public Ship(String id, int size, int x, int y) {
+    public Ship(String id, int size, int centerX, int centerY) {
         this.id = id;
         this.size = size;
         this.coordinates = new ArrayList<>();
-        this.hits = new HashSet<>();
+        // this.hits = new HashSet<>();
+        this.isHit = false;
+        // Calculate the starting corner of the ship based on the center coordinates
+        int halfSize = size / 2;
+        int startX = centerX - halfSize;
+        int startY = centerY - halfSize;
+
         for (int i = 0; i < size; i++) {
-            coordinates.add(new int[] { x + i, y }); // Horizontal placement
+            for (int j = 0; j < size; j++) {
+                coordinates.add(new int[] { startX + i, startY + j });
+                System.out.println("Ship " + id + " coordinates: " + (startX + i) + ", " + (startY + j));
+            }
         }
     }
 
@@ -26,22 +36,19 @@ public class Ship {
         return coordinates;
     }
 
+    // This method marks the entire ship as hit if any part of it is hit
     public boolean isHit(int x, int y) {
         for (int[] coord : coordinates) {
             if (coord[0] == x && coord[1] == y) {
-                hits.add(x + "," + y);
+                isHit = true;
                 return true;
             }
         }
         return false;
     }
 
+    // This method checks if the ship is destroyed (i.e., hit)
     public boolean isDestroyed() {
-        for (int[] coord : coordinates) {
-            if (!hits.contains(coord[0] + "," + coord[1])) {
-                return false;
-            }
-        }
-        return true;
+        return isHit;
     }
 }

@@ -61,10 +61,26 @@ public class GameService {
         System.out.println(winner + " wins the game!");
     }
 
-    public void displayBattlefields() {
-        System.out.println("PlayerA's Battlefield:");
-        playerA.displayBattlefield();
-        System.out.println("\nPlayerB's Battlefield:");
-        playerB.displayBattlefield();
+    public void viewBattleField() {
+        String[][] battlefieldA = playerA.getBattlefield();
+        String[][] battlefieldB = playerB.getBattlefield();
+
+        System.out.println("Combined Battlefield:");
+        for (int i = 0; i < battlefieldSize; i++) {
+            for (int j = 0; j < battlefieldSize; j++) {
+                String cellA = battlefieldA[i][j];
+                String cellB = battlefieldB[i][j];
+                if (!cellA.equals(".") && !cellB.equals(".")) {
+                    System.out.print("X "); // Both players have a ship at this position
+                } else if (!cellA.equals(".")) {
+                    System.out.print(cellA + " "); // PlayerA has a ship at this position
+                } else if (!cellB.equals(".")) {
+                    System.out.print(cellB + " "); // PlayerB has a ship at this position
+                } else {
+                    System.out.print(". "); // No ship at this position
+                }
+            }
+            System.out.println();
+        }
     }
 }

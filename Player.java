@@ -6,32 +6,49 @@ public class Player {
     private String name;
     private String[][] battlefield;
     private Map<String, Ship> ships;
-    private int startCol;
-    private int endCol;
+    private boolean isLeftHalf; // To identify if the player is PlayerA (left half) or PlayerB (right half)
 
-    public Player(String name, int size, int startCol, int endCol) {
+    public Player(String name, int size, boolean isLeftHalf) {
         this.name = name;
         this.battlefield = new String[size][size];
         this.ships = new HashMap<>();
-        this.startCol = startCol;
-        this.endCol = endCol;
+        this.isLeftHalf = isLeftHalf;
         for (int i = 0; i < size; i++) {
             Arrays.fill(battlefield[i], ".");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Player [name=" + name + ", battlefield=" + Arrays.toString(battlefield) + ", ships=" + ships
+                + ", isLeftHalf=" + isLeftHalf + "]";
     }
 
     public String getName() {
         return name;
     }
 
-    public void placeShip(String shipId, int size, int x, int y) throws IllegalArgumentException {
-        Ship ship = new Ship(shipId, size, x, y);
+    public void placeShip(String shipId, int size, int centerX, int centerY) throws IllegalArgumentException {
+        System.out.println("Placing ship " + shipId + " for " + name + " at (" + centerX + ", " + centerY + ")");
+        Ship ship = new Ship(shipId, size, centerX, centerY);
         for (int[] coord : ship.getCoordinates()) {
-            if (coord[0] < 0 || coord[0] >= battlefield.length || coord[1] < startCol || coord[1] >= endCol) {
+            if (coord[0] < 0 || coord[1] < 0 || coord[0] >= battlefield.length || coord[1] >= battlefield[0].length) {
                 throw new IllegalArgumentException("Ship " + shipId + " placement is out of bounds.");
             }
             if (!battlefield[coord[0]][coord[1]].equals(".")) {
                 throw new IllegalArgumentException("Ship " + shipId + " placement overlaps with another ship.");
+            }
+            // Validation to ensure the ship is placed in the correct half of the
+            // battlefield
+            if (isLeftHalf && coord[1] >= battlefield[0].length / 2) {
+                throw new IllegalArgumentException("Ship " + shipId
+                        + " placement is in the opponent's territory. isLeftHalf: " + isLeftHalf + " coord[1]: "
+                        + coord[1] + " battlefield[0].length / 2: " + battlefield[0].length / 2);
+            }
+            if (!isLeftHalf && coord[1] < battlefield[0].length / 2) {
+                throw new IllegalArgumentException("Ship " + shipId
+                        + " placement is in the opponent's territory. isLeftHalf: " + isLeftHalf + " coord[1]: "
+                        + coord[1] + " battlefield[0].length / 2: " + battlefield[0].length / 2);
             }
         }
         for (int[] coord : ship.getCoordinates()) {
@@ -40,21 +57,25 @@ public class Player {
         ships.put(shipId, ship);
     }
 
-    public String attack(int x, int y) {
+    public String[] attack(int x, int y) {
+        String[] result = new String[2];
+        result[0] = "Miss";
         if (x < 0 || x >= battlefield.length || y < 0 || y >= battlefield[0].length) {
-            return "Miss";
+            result[0] = "Miss, Outside arena";
         }
         String cell = battlefield[x][y];
         if (!cell.equals(".") && ships.containsKey(cell)) {
             Ship ship = ships.get(cell);
             if (ship.isHit(x, y)) {
-                if (ship.isDestroyed()) {
-                    return "Hit and destroyed " + cell;
+                for (int[] coord : ship.getCoordinates()) {
+                    battlefield[coord[0]][coord[1]] = ".";
                 }
-                return "Hit";
+                ships.remove(cell);
+                result[0] = "Hit";
+                result[1] = cell;
             }
         }
-        return "Miss";
+        return result;
     }
 
     public boolean hasShipsRemaining() {
@@ -64,6 +85,16 @@ public class Player {
             }
         }
         return false;
+    }
+
+    public int getShipsRemaining() {
+        int count = 0;
+        for (Ship ship : ships.values()) {
+            if (!ship.isDestroyed()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public void displayBattlefield() {

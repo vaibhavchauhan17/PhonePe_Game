@@ -9,9 +9,9 @@ public class GameApp {
         gameService.addShip("SH1", 2, 5, 1, 4, 4);
         // gameService.addShip("SH2", 2, 1, 1, 5, 5);
 
-        gameService.displayBattlefields();
+        gameService.viewBattleField();
         gameService.startGame();
-        gameService.displayBattlefields();
+        gameService.viewBattleField();
 
     }
 }

@@ -12,8 +12,8 @@ public class GameService {
 
     public void initGame(int size) {
         this.battlefieldSize = size;
-        this.playerA = new Player("PlayerA", size, 0, size / 2); // Player A gets the first half
-        this.playerB = new Player("PlayerB", size, size / 2, size); // Player B gets the second half
+        this.playerA = new Player("PlayerA", size, true); // PlayerA is assigned the left half
+        this.playerB = new Player("PlayerB", size, false); // PlayerB is assigned the right half
         this.firedCoordinates = new HashSet<>();
         System.out.println("Game initialized with battlefield size " + size + "x" + size);
     }
@@ -42,12 +42,21 @@ public class GameService {
             } while (firedCoordinates.contains(x + "," + y));
 
             firedCoordinates.add(x + "," + y);
-            String result = opponent.attack(x, y);
-            System.out.println(currentPlayer.getName() + " fires at (" + x + ", " + y + ") - " + result);
+            String[] attackResult = opponent.attack(x, y);
+            String result = "";
+            if (attackResult[0].equals("Hit")) {
+                result = "Hit" + opponent.getName() + "'s ship with id " + attackResult[1] + "destroyed.";
+            } else {
+                result = "Miss";
+            }
+            String shipsRemaining = " Ships Remaining- PlayerA:" + playerA.getShipsRemaining() + ", PlayerB:"
+                    + playerB.getShipsRemaining();
+
+            System.out
+                    .println(currentPlayer.getName() + "'s turn: Missile fired at (" + x + ", " + y + ") : " + result
+                            + shipsRemaining);
             turn++;
         }
-        System.out.println("playerA.hasShipsRemaining" + playerA.hasShipsRemaining() + "playerA.hasShipsRemaining"
-                + playerB.hasShipsRemaining());
         String winner = playerA.hasShipsRemaining() ? "PlayerA" : "PlayerB";
         System.out.println(winner + " wins the game!");
     }

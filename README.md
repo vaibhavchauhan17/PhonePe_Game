@@ -43,7 +43,7 @@ The PhonePe Game is a simple battleship game implemented in Java. It allows two 
 - `Ship.java`: Represents a ship in the game. Manages the ship's coordinates, hit detection, and destruction status.
 
 ## How to Play
-1. Upon running the game, the battlefield is initialized with a specified size (e.g., 8x8).
+1. Upon running the game, the battlefield is initialized with a specified size (e.g., 6X6).
 2. Ships are added to both players' battlefields at specified coordinates.
 3. The game starts, and players take turns attacking random coordinates on the opponent's battlefield.
 4. The game continues until one player has destroyed all the opponent's ships.
@@ -55,26 +55,21 @@ Game initialized with battlefield size 8x8
 Ship SH1 added successfully for both players.
 Ship SH2 added successfully for both players.
 PlayerA's Battlefield:
-A-SH1 . . . . . . .
-A-SH1 . . . . . . .
-A-SH1 . . . . . . .
-. . . . . . . .
-. . . . . . . .
-. . . . . . . .
-. . . . . . . .
-. . . . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+A-SH1 A-SH1 . . . .
+A-SH1 A-SH1 . . . .
 
 PlayerB's Battlefield:
-B-SH1 . . . . . . .
-B-SH1 . . . . . . .
-B-SH1 . . . . . . .
-. . . . . . . .
-. . . . . . . .
-. . . . . . . .
-. . . . . . . .
-. . . . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+. . . B-SH1 B-SH1 .
+. . . B-SH1 B-SH1 .
+. . . . . .
 
-PlayerA fires at (5, 3) - Miss
-PlayerB fires at (2, 7) - Miss
+PlayerA fires at (1, 3) - Miss
 ...
 PlayerA wins the game!

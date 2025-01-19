@@ -24,6 +24,10 @@ public class Player {
                 + ", isLeftHalf=" + isLeftHalf + "]";
     }
 
+    public String[][] getBattlefield() {
+        return battlefield;
+    }
+
     public String getName() {
         return name;
     }

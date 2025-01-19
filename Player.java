@@ -6,11 +6,15 @@ public class Player {
     private String name;
     private String[][] battlefield;
     private Map<String, Ship> ships;
+    private int startCol;
+    private int endCol;
 
-    public Player(String name, int size) {
+    public Player(String name, int size, int startCol, int endCol) {
         this.name = name;
         this.battlefield = new String[size][size];
         this.ships = new HashMap<>();
+        this.startCol = startCol;
+        this.endCol = endCol;
         for (int i = 0; i < size; i++) {
             Arrays.fill(battlefield[i], ".");
         }
@@ -23,7 +27,7 @@ public class Player {
     public void placeShip(String shipId, int size, int x, int y) throws IllegalArgumentException {
         Ship ship = new Ship(shipId, size, x, y);
         for (int[] coord : ship.getCoordinates()) {
-            if (coord[0] >= battlefield.length || coord[1] >= battlefield[0].length) {
+            if (coord[0] < 0 || coord[0] >= battlefield.length || coord[1] < startCol || coord[1] >= endCol) {
                 throw new IllegalArgumentException("Ship " + shipId + " placement is out of bounds.");
             }
             if (!battlefield[coord[0]][coord[1]].equals(".")) {

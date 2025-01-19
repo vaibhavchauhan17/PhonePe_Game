@@ -1,16 +1,20 @@
 package PhonePe;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class GameService {
     private Player playerA;
     private Player playerB;
     private int battlefieldSize;
+    private Set<String> firedCoordinates;
 
     public void initGame(int size) {
         this.battlefieldSize = size;
-        this.playerA = new Player("PlayerA", size);
-        this.playerB = new Player("PlayerB", size);
+        this.playerA = new Player("PlayerA", size, 0, size / 2); // Player A gets the first half
+        this.playerB = new Player("PlayerB", size, size / 2, size); // Player B gets the second half
+        this.firedCoordinates = new HashSet<>();
         System.out.println("Game initialized with battlefield size " + size + "x" + size);
     }
 
@@ -31,13 +35,19 @@ public class GameService {
             Player currentPlayer = (turn % 2 == 0) ? playerA : playerB;
             Player opponent = (currentPlayer == playerA) ? playerB : playerA;
 
-            int x = random.nextInt(battlefieldSize);
-            int y = random.nextInt(battlefieldSize);
+            int x, y;
+            do {
+                x = random.nextInt(battlefieldSize / 2) + (currentPlayer == playerA ? 0 : battlefieldSize / 2);
+                y = random.nextInt(battlefieldSize);
+            } while (firedCoordinates.contains(x + "," + y));
+
+            firedCoordinates.add(x + "," + y);
             String result = opponent.attack(x, y);
             System.out.println(currentPlayer.getName() + " fires at (" + x + ", " + y + ") - " + result);
             turn++;
         }
-
+        System.out.println("playerA.hasShipsRemaining" + playerA.hasShipsRemaining() + "playerA.hasShipsRemaining"
+                + playerB.hasShipsRemaining());
         String winner = playerA.hasShipsRemaining() ? "PlayerA" : "PlayerB";
         System.out.println(winner + " wins the game!");
     }
